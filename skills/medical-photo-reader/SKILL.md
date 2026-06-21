@@ -69,6 +69,12 @@ If only medical image photos are present:
 - State that complete interpretation requires original DICOM and a radiologist/clinician.
 - Ask for the formal report or DICOM export.
 
+If original DICOM or a full imaging export is present:
+- Switch from "phone photo reading" to the DICOM workflow.
+- Use DICOM viewers/slice tooling to inspect metadata, series, windowing, and representative frames.
+- Only use task-specific medical AI models when the modality, anatomy, task, and model validation match.
+- Keep outputs framed as assisted analysis or structured observations, not final diagnosis.
+
 If only lab/checkup report photos are present:
 - Summarize abnormal or borderline items.
 - Explain likely meaning at a general level.
@@ -101,15 +107,19 @@ When the user asks for a shorter answer, collapse to: `结论摘要`, `需要确
 ## Component Stack
 
 For implementation or product planning, use this combined stack:
+- Vision/multimodal model: classify the image type, read visible layout/labels/annotations, and decide whether OCR, DICOM, or model workflow is needed.
 - OCR/document extraction: PaddleOCR first; Tesseract/OpenCV only as a simple fallback.
 - Medical report extraction: regular expressions and section parsing for findings/impression/conclusion/reference ranges.
 - Image preprocessing: crop, deskew, denoise, contrast enhancement, glare/blur quality checks.
-- Medical image viewers: 3D Slicer, OHIF, or Weasis only when original DICOM is available.
-- Medical AI frameworks: MONAI/MONAI Label only for task-specific validated models, not raw phone photos.
+- DICOM viewers/slice processing: 3D Slicer, OHIF, Weasis, pydicom, SimpleITK, and dicom2nifti only when original DICOM is available.
+- Medical AI frameworks: MONAI/MONAI Label only for task-specific validated models, never raw phone photos.
 - Medical VLMs: use only as research/secondary assistance; never as a sole diagnostic source.
 
 Read `references/repo-stack.md` when the user asks which GitHub repos to combine or how to build the pipeline.
 Read `references/input-quality.md` when the user asks how to photograph reports or medical images.
+Read `references/vision-model-workflow.md` when the user asks how the base vision model should inspect uploaded phone photos, screenshots, or scan images before OCR/DICOM routing.
+Read `references/dicom-workflow.md` when the user provides original DICOM, asks about CT/MRI slice handling, or wants 3D Slicer/OHIF/Weasis integration.
+Read `references/model-workflow.md` when the user asks how to connect MONAI/MONAI Label or task-specific medical image models.
 
 ## Response Tone
 

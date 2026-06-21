@@ -44,6 +44,8 @@ General models may overstate what they can infer from those images. This skill g
 
 ```text
 medical-photo-reader-skill/
+├── external/
+│   └── skills/kimi-vision/      # optional submodule, Kimi OCR/vision skill reference
 ├── skills/
 │   └── medical-photo-reader/
 │       ├── SKILL.md
@@ -102,6 +104,7 @@ Use $medical-photo-reader to explain this ultrasound report photo in Chinese. Do
 
 This skill is an orchestration layer. If you want to build a runnable product around it, combine:
 
+- A vision/multimodal model adapter for first-pass image classification and visible label reading. This repo includes `external/skills/kimi-vision` as an optional submodule reference.
 - `PaddlePaddle/PaddleOCR` for OCR.
 - OpenCV/Pillow for image cleanup and quality checks.
 - Rule-based parsers for lab values and report sections.
@@ -119,4 +122,24 @@ This repository is for information extraction, explanation, and workflow assista
 
 ```bash
 python3 scripts/validate.py
+```
+
+## External Skill Submodules
+
+This repository may include external skill references under `external/skills/`.
+
+Currently included:
+
+- [`zzj2004/kimi-vision`](https://github.com/zzj2004/kimi-vision): a Kimi/Moonshot API OCR and image recognition skill. It is useful as a reference for the vision-model adapter layer, but it requires a `KIMI_API_KEY` and should not be used as a medical diagnostic authority.
+
+Clone with submodules:
+
+```bash
+git clone --recurse-submodules https://github.com/rongyanandyanzi/AI-in-medical-diagnosis.git
+```
+
+Or initialize after cloning:
+
+```bash
+git submodule update --init --recursive
 ```

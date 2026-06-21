@@ -4,7 +4,25 @@ This reference maps the user-facing need to GitHub components.
 
 ## Best Combined Architecture
 
-### Layer 1: Input Intake
+### Layer 1: Vision Model First Pass
+
+Purpose: use a vision/multimodal model to classify uploaded images and extract visible, non-diagnostic information before routing.
+
+Relevant skill/submodule:
+- `zzj2004/kimi-vision` - optional Codex skill reference for OCR and image recognition through Kimi/Moonshot API. Requires `KIMI_API_KEY`; not a medical diagnostic model.
+
+Relevant medical VLM research:
+- `mbzuai-oryx/XrayGPT` - chest radiograph summarization research.
+- `richard-peng-xia/MMed-RAG` - multimodal medical RAG research.
+- `yezanting/Med-VLM-Bench-Summary` - benchmark/index for medical VLMs.
+
+Recommended use:
+- Classify whether the upload is a report, lab table, radiology report, phone photo of a scan, or DICOM-related export.
+- Extract visible labels, annotations, and obvious text.
+- Route to OCR, DICOM workflow, or model workflow.
+- Never use this layer alone for diagnosis.
+
+### Layer 2: Input Intake
 
 Purpose: accept phone photos, screenshots, PDF exports, report images, and optional DICOM files.
 
@@ -17,7 +35,7 @@ Suggested implementation:
 - OpenCV for blur/glare/skew checks and cleanup.
 - Pillow for basic image handling.
 
-### Layer 2: OCR And Document Understanding
+### Layer 3: OCR And Document Understanding
 
 Primary repo:
 - `PaddlePaddle/PaddleOCR` - best general OCR choice for multilingual medical reports, checkup reports, screenshots, and PDFs.
@@ -33,7 +51,7 @@ Recommended use:
 - Use smaller repos for layout ideas only.
 - Post-process OCR with deterministic parsing before asking an LLM to explain it.
 
-### Layer 3: Medical Report Parsing
+### Layer 4: Medical Report Parsing
 
 Relevant repos:
 - `MoMarky/radiology-report-extraction` - extracts findings and impression sections from radiology reports.
@@ -49,7 +67,7 @@ Recommended fields:
 - Measurements.
 - Abnormal lab values with units and reference ranges.
 
-### Layer 4: Medical Image Viewing
+### Layer 5: DICOM Viewing And Slice Processing
 
 Use only when original DICOM or a real medical image export is available.
 
@@ -59,9 +77,15 @@ Relevant repos:
 - `nroduit/Weasis` - clinical-style DICOM/PACS viewer.
 - `Project-MONAI/MONAILabel` - AI-assisted labeling integrated with Slicer/OHIF.
 
+Programmatic tools:
+- `pydicom` - DICOM metadata and pixel access.
+- `SimpleITK` - DICOM series loading and geometry-aware image processing.
+- `dicom2nifti` - DICOM series to NIfTI conversion.
+- `nibabel` - NIfTI read/write.
+
 Do not use these as primary tools for phone photos of screens or films. For phone photos, they can at most inspire UI/workflow.
 
-### Layer 5: Medical AI Models
+### Layer 6: Medical AI Models
 
 For DICOM or standardized medical images:
 - `Project-MONAI/MONAI` - model framework.
@@ -86,12 +110,14 @@ Recommended use:
 
 1. Upload images/PDFs.
 2. Classify input type.
-3. Run image quality check.
-4. If document/report: run OCR and parse sections.
-5. If phone photo of CT/MRI/ultrasound/X-ray: extract visible labels and annotations only.
-6. If original DICOM: offer Slicer/OHIF/Weasis/MONAI workflow.
-7. LLM produces safety-aware explanation.
-8. Output doctor questions and missing-material checklist.
+3. Run vision-model first pass for visible labels/annotations and routing.
+4. Run image quality check.
+5. If document/report: run OCR and parse sections.
+6. If phone photo of CT/MRI/ultrasound/X-ray: extract visible labels and annotations only.
+7. If original DICOM: route to Slicer/OHIF/Weasis plus pydicom/SimpleITK/dicom2nifti as needed.
+8. If model task matches validated inputs: run MONAI/MONAI Label or task-specific model.
+9. LLM produces safety-aware explanation.
+10. Output doctor questions and missing-material checklist.
 
 ## Minimal MVP
 

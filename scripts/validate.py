@@ -19,6 +19,9 @@ def main() -> None:
     require(SKILL / "agents" / "openai.yaml")
     require(SKILL / "references" / "repo-stack.md")
     require(SKILL / "references" / "input-quality.md")
+    require(SKILL / "references" / "vision-model-workflow.md")
+    require(SKILL / "references" / "dicom-workflow.md")
+    require(SKILL / "references" / "model-workflow.md")
 
     text = (SKILL / "SKILL.md").read_text(encoding="utf-8")
     if not text.startswith("---"):

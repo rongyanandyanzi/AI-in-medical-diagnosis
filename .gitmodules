@@ -1,0 +1,3 @@
+[submodule "external/skills/kimi-vision"]
+	path = external/skills/kimi-vision
+	url = https://github.com/zzj2004/kimi-vision.git
