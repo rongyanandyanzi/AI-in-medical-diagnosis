@@ -1,13 +1,13 @@
 ---
 name: medical-photo-reader
-description: Use this skill when the user uploads or asks about phone photos or screenshots of medical checkup reports, lab reports, radiology reports, ultrasound images, CT/MRI/X-ray screen photos, or other patient-facing medical documents, and wants help extracting text, explaining findings, organizing uncertainty, or preparing questions for a clinician. This skill is for OCR-style extraction, non-diagnostic visual description, safety-aware explanation, and triage of what additional source material is needed; it must not produce a definitive diagnosis from phone photos of medical images.
+description: Use this skill when the user uploads or asks about phone photos or screenshots of medical checkup reports, lab reports, radiology reports, ultrasound images, CT/MRI/X-ray screen photos, pathology/biopsy reports, functional test reports (ECG, pulmonary function, sleep study), or other patient-facing medical documents, and wants help extracting text, explaining findings, organizing uncertainty, or preparing questions for a clinician. This skill is for OCR-style extraction, non-diagnostic visual description, safety-aware explanation, and triage of what additional source material is needed; it must not produce a definitive diagnosis from phone photos of medical images.
 ---
 
 # Medical Photo Reader
 
 ## Purpose
 
-Use this skill to help with phone-captured medical materials: physical exam reports, lab reports, radiology reports, ultrasound reports, CT/MRI/X-ray screen photos, printouts, and screenshots.
+Use this skill to help with phone-captured medical materials: physical exam reports, lab reports, radiology reports, ultrasound reports, CT/MRI/X-ray screen photos, pathology and biopsy reports, functional test reports (ECG, Holter, pulmonary function test, sleep study), printouts, and screenshots.
 
 The goal is not to turn the model into a radiologist. The goal is to extract readable information, explain medical wording, separate what can and cannot be inferred, and produce a useful checklist for the user's doctor.
 
@@ -31,7 +31,7 @@ Not allowed:
 - Pretend a single CT/MRI slice or ultrasound frame represents the whole study.
 - Treat OCR output as perfect when the image is blurry, skewed, cropped, reflective, or partially blocked.
 
-If the user reports urgent symptoms such as severe chest pain, stroke-like symptoms, severe breathing difficulty, new weakness/numbness, heavy bleeding, severe trauma, or altered consciousness, advise urgent medical care rather than continuing image interpretation.
+If the user reports urgent symptoms such as severe chest pain, stroke-like symptoms, severe breathing difficulty, new weakness/numbness, heavy bleeding, severe trauma, or altered consciousness, stop image interpretation and advise immediate emergency care. In mainland China dial 120; in Hong Kong dial 999; in Taiwan dial 119.
 
 ## Workflow
 
@@ -42,6 +42,9 @@ First identify the material type:
 - Lab/checkup report: tables with test names, values, reference ranges.
 - Radiology report: findings/impression text for CT/MRI/X-ray/ultrasound.
 - Medical image phone photo: CT/MRI/X-ray/ultrasound image captured from screen, film, or paper.
+- Pathology/biopsy report: gross description, microscopic diagnosis, staging, margin status, IHC results.
+- Functional test report: ECG/Holter strip or report, pulmonary function test (PFT), sleep study summary, exercise stress test report.
+- Serial/comparison bundle: multiple reports or images from different dates for trend tracking.
 - Mixed bundle: report plus images.
 - Unknown/low-quality image.
 
@@ -58,6 +61,18 @@ For CT/MRI/X-ray/ultrasound photos:
 - Extract visible modality, body part, orientation marks, series/window labels, measurements, arrows/circles, captions, and timestamps.
 - Describe whether the image is a photo of a screen/film/report page.
 - Note quality problems: glare, blur, angle, crop, low resolution, missing slices, missing window/sequence information.
+
+For pathology/biopsy report photos:
+- Extract specimen type, body part, date, gross description summary, microscopic diagnosis, staging (TNM/Gleason/FIGO), margin status, lymph node results, and IHC marker results.
+- Preserve the exact diagnosis wording; explain it afterward.
+- Note whether the report is a frozen section (preliminary) or a paraffin/permanent section (final).
+- Flag any mention of pending addenda (e.g., IHC results not yet returned).
+
+For functional test report photos:
+- ECG/Holter: extract rhythm, rate, intervals, and the interpreting physician's conclusion if visible.
+- PFT: extract FVC, FEV1, FEV1/FVC ratio, DLCO if shown; note whether an obstruction or restriction pattern is stated.
+- Sleep study: extract AHI, oxygen saturation nadir, and severity classification if stated.
+- Preserve the interpreting physician's conclusion; mark fields that are cut off or unreadable.
 
 ### 3. Choose The Interpretation Mode
 
@@ -81,6 +96,22 @@ If only lab/checkup report photos are present:
 - Summarize abnormal or borderline items.
 - Explain likely meaning at a general level.
 - Avoid diagnosing; recommend discussing with a clinician, especially for serious or repeated abnormalities.
+
+If a pathology or biopsy report is present:
+- Treat the pathology diagnosis as definitive tissue-level evidence.
+- Explain staging, margin status, lymph node status, and IHC markers in plain language.
+- Do not predict prognosis or recommend treatment.
+- Read `references/pathology-workflow.md` for detailed guidance.
+
+If functional test reports are present (ECG, PFT, sleep study):
+- Extract the interpreting physician's conclusion if visible.
+- Explain rhythm terms, spirometry patterns, or sleep severity categories in plain language.
+- Do not replace the interpreting physician's judgment.
+- Ask for the full report if only a strip or partial printout is provided.
+
+If multiple reports from different dates are present:
+- Extract each report separately first, then highlight changes.
+- Read `references/comparison-workflow.md` for the comparison output format.
 
 ### 4. Output Format
 
@@ -122,6 +153,8 @@ Read `references/input-quality.md` when the user asks how to photograph reports 
 Read `references/vision-model-workflow.md` when the user asks how the base vision model should inspect uploaded phone photos, screenshots, or scan images before OCR/DICOM routing.
 Read `references/dicom-workflow.md` when the user provides original DICOM, asks about CT/MRI slice handling, or wants 3D Slicer/OHIF/Weasis integration.
 Read `references/model-workflow.md` when the user asks how to connect MONAI/MONAI Label or task-specific medical image models.
+Read `references/pathology-workflow.md` when the user uploads a pathology, biopsy, cytology, or IHC report.
+Read `references/comparison-workflow.md` when the user uploads multiple reports from different dates or asks to compare results over time.
 
 ## Response Tone
 
