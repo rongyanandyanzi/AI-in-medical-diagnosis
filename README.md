@@ -53,7 +53,12 @@ medical-photo-reader-skill/
 │       ├── SKILL.md
 │       ├── agents/openai.yaml
 │       └── references/
+│           ├── comparison-workflow.md
+│           ├── dicom-workflow.md
 │           ├── input-quality.md
+│           ├── model-workflow.md
+│           ├── pathology-workflow.md
+│           ├── vision-model-workflow.md
 │           └── repo-stack.md
 ├── docs/
 │   ├── architecture.md

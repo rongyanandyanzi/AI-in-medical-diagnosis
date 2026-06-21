@@ -22,6 +22,8 @@ def main() -> None:
     require(SKILL / "references" / "vision-model-workflow.md")
     require(SKILL / "references" / "dicom-workflow.md")
     require(SKILL / "references" / "model-workflow.md")
+    require(SKILL / "references" / "pathology-workflow.md")
+    require(SKILL / "references" / "comparison-workflow.md")
 
     text = (SKILL / "SKILL.md").read_text(encoding="utf-8")
     if not text.startswith("---"):
