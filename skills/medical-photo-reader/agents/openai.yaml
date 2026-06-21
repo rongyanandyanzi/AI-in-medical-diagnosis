@@ -1,7 +1,7 @@
 interface:
   display_name: "Medical Photo Reader"
   short_description: "Read medical report photos safely"
-  default_prompt: "Use $medical-photo-reader to extract and explain this phone photo of a medical report or scan image safely."
+  default_prompt: "Use $medical-photo-reader to extract and explain this phone photo of a medical report or scan image safely in Simplified Chinese."
   brand_color: "#2E74B5"
 policy:
   allow_implicit_invocation: true

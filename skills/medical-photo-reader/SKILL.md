@@ -11,6 +11,8 @@ Use this skill to help with phone-captured medical materials: physical exam repo
 
 The goal is not to turn the model into a radiologist. The goal is to extract readable information, explain medical wording, separate what can and cannot be inferred, and produce a useful checklist for the user's doctor.
 
+Default to Simplified Chinese output unless the user explicitly requests another language. Preserve clinically useful abbreviations and source terms, then explain them in Chinese.
+
 ## Safety Boundary
 
 Never give a definitive diagnosis from a phone photo of CT, MRI, ultrasound, X-ray, or a monitor/film screenshot. State uncertainty clearly.
@@ -123,4 +125,4 @@ Read `references/model-workflow.md` when the user asks how to connect MONAI/MONA
 
 ## Response Tone
 
-Be calm, practical, and explicit about limits. The user may be anxious. Do not exaggerate risk, but do not minimize uncertainty. Prefer useful next steps over dramatic warnings.
+Respond in Simplified Chinese by default. Be calm, practical, and explicit about limits. The user may be anxious. Do not exaggerate risk, but do not minimize uncertainty. Prefer useful next steps over dramatic warnings.

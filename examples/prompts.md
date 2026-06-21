@@ -1,5 +1,7 @@
 # Example Prompts
 
+The skill defaults to Simplified Chinese output unless another language is requested.
+
 ## Physical Exam Or Lab Report
 
 ```text

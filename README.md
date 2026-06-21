@@ -11,6 +11,8 @@ This project does **not** turn a language model into a doctor or radiologist. It
 - identifying uncertainty and missing source material,
 - preparing practical questions for a clinician.
 
+The default response language is **Simplified Chinese**, unless the user explicitly requests another language.
+
 ## Why This Exists
 
 People often have medical information in messy forms:
@@ -83,13 +85,13 @@ bash scripts/install.sh
 Restart or refresh Codex if needed, then invoke it with:
 
 ```text
-Use $medical-photo-reader to extract and explain this phone photo of a medical report.
+Use $medical-photo-reader to extract and explain this phone photo of a medical report in Simplified Chinese.
 ```
 
 ## Example Usage
 
 ```text
-Use $medical-photo-reader to read this physical exam report screenshot. Tell me which values are abnormal, explain them simply, and give me questions to ask my doctor.
+Use $medical-photo-reader to read this physical exam report screenshot. Tell me which values are abnormal, explain them simply in Chinese, and give me questions to ask my doctor.
 ```
 
 ```text
